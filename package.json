@@ -4,20 +4,34 @@
   "description": "Sistema para la gestión de citas médicas",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start",
+    "start": "ts-node-dev src/index.ts"
   },
   "author": "Jean Paul Andres Cortez Rivera",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "jasmine": "^5.1.0",
-    "karma": "^6.4.2",
+    "express-validator": "^7.0.1",
     "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "^5.1.0",
+    "ts-node-dev": "^2.0.0",
     "ts-standard": "^12.0.2",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "@types/jsonwebtoken": "^9.0.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.3"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "./node_modules/ts-standard/eslintrc.json"
+    ]
   }
 }
