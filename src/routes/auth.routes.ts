@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { loginPatientC } from '../controllers/auth.controller'
 
 const router = Router()
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.post('/', loginPatientC)
+router.post('/', () => {
+  console.log('asdasd')
+})
 
 export { router as loginRouter }

@@ -1,8 +1,8 @@
-import { header } from 'express-validator'
+import { param } from 'express-validator'
 
-const idValidator = [
-  header('id').not().isEmpty().withMessage('El id es requerido'),
-  header('id').isNumeric().withMessage('Id inválido')
+const dniValidator = [
+  param('dni').not().isEmpty().withMessage('El dni es requerido'),
+  param('dni').isNumeric().withMessage('Dni inválido')
 ]
 
-export default idValidator
+export default dniValidator

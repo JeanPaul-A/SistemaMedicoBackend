@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
-import { deleteObject, getObjects, postObject, putObject } from '../controllers/patients.controller'
+import * as PatientController from '../controllers/patients.controller'
 import { createPatientValidator, updatePatientValidator } from '../middleware/validators/patients.validators'
-import validateResult from '../helpers/validateResult'
-import idValidator from '../middleware/validators/general.validator'
+import validateResult from '../helpers/result.handler'
+import dniValidator from '../middleware/validators/general.validator'
 
 const router = Router()
 
-router.get('/', getObjects)
+router.get('/', PatientController.getPatients)
 
-router.post('/', createPatientValidator, validateResult, postObject)
+router.get('/:dni', PatientController.getPatientByDni)
 
-router.put('/:id', idValidator, updatePatientValidator, validateResult, putObject)
+router.post('/', createPatientValidator, validateResult, PatientController.postPatient)
 
-router.delete('/:id', idValidator, validateResult, deleteObject)
+router.put('/:dni', dniValidator, updatePatientValidator, validateResult, PatientController.putPatient)
+
+router.delete('/:dni', dniValidator, validateResult, PatientController.deletePatient)
 
 export default router

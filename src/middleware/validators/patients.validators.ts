@@ -1,6 +1,9 @@
 import { body } from 'express-validator'
 
 export const createPatientValidator = [
+  body('dni').not().isEmpty().withMessage('El dni es requerido'),
+  body('dni').isNumeric().withMessage('El dni debe ser un número'),
+  body('dni').isLength({ min: 7, max: 7 }).withMessage('El dni tiene 7 dígitos'),
   body('name').not().isEmpty().withMessage('El nombre es requerido'),
   body('name').isString().withMessage('El nombre debe ser un texto'),
   body('surname').not().isEmpty().withMessage('El apellido es requerido'),

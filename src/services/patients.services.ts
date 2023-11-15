@@ -1,59 +1,74 @@
-import dbConnection from '../helpers/dbConnection'
-import { Patient } from '../interfaces/patient.interface'
+import { IPatient, IPatientUpdate } from '../interfaces/patient.interface'
+import Patient from '../models/patient.model'
 
-const getPatients = (): any => {
-  return new Promise((resolve, reject) => {
-    const GET_PATIENTS = 'SELECT * FROM patients'
-    dbConnection.query(GET_PATIENTS, (error: any, result) => {
-      if (error != null) {
-        reject(error)
-      } else {
-        resolve(result)
-      }
-    })
-  })
+const getPatients = async (): Promise<Patient[]> => {
+  try {
+    const patients = await Patient.findAll()
+    return patients
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
-const postPatient = (patient: Patient): any => {
-  return new Promise((resolve, reject) => {
-    const POST_PATIENTS = 'INSERT INTO patients VALUES (?,?,?,?,?,?)'
-    dbConnection.query(POST_PATIENTS, [null, patient.name, patient.surname, patient.email, patient.password, patient.phone], (error, _result) => {
-      if (error != null) {
-        reject(error)
-      } else {
-        resolve('Patient created in dataDbase')
-      }
-    })
-  })
+const getPatientByDni = async (dni: string): Promise<Patient | string | undefined> => {
+  try {
+    const patient = await Patient.findByPk(dni)
+    if (patient == null) {
+      return `There´s not patient with dni: ${dni} in database`
+    } else {
+      return patient
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-const putPatient = (id: string, patient: Patient): any => {
-  return new Promise((resolve, reject) => {
-    const PUT_PATIENTS = 'UPDATE patients SET email=?, phone=? WHERE id=?'
-    dbConnection.query(PUT_PATIENTS, [patient.email, patient.phone, id], (error, _result) => {
-      if (error != null) {
-        reject(error)
-      } else {
-        resolve({
-          message: 'Patient updated in database',
-          updatedPatient: patient
-        })
-      }
+const postPatient = async (patient: IPatient): Promise<any> => {
+  try {
+    const newPatient = await Patient.create({
+      dni: patient.dni,
+      name: patient.name,
+      surname: patient.surname,
+      email: patient.email,
+      password: patient.password,
+      phone: patient.phone
     })
-  })
+    return {
+      message: 'Usuario creado exitosamente',
+      newPatient
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-const deletePatient = (id: string): any => {
-  return new Promise((resolve, reject) => {
-    const DELETE_PATIENTS = 'DELETE FROM patients WHERE id=?'
-    dbConnection.query(DELETE_PATIENTS, [id], (error, result) => {
-      if (error != null) {
-        reject(error)
-      } else {
-        resolve(`Patient with id ${id} deleted from database : ${+result}`)
+const putPatient = async (dni: string, patient: IPatientUpdate): Promise<any> => {
+  try {
+    const updatedPatient = await Patient.update({
+      email: patient.email,
+      phone: patient.phone
+    }, {
+      where: {
+        dni
       }
     })
-  })
+    return updatedPatient.length === 1
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-export { getPatients, postPatient, putPatient, deletePatient }
+const deletePatient = async (dni: string): Promise<any> => {
+  try {
+    const deletedPatient = await Patient.destroy({
+      where: {
+        dni
+      }
+    })
+    return deletedPatient === 1
+  } catch (error) {
+    console.error(error)
+  }
+}
+export { getPatients, getPatientByDni, postPatient, putPatient, deletePatient }

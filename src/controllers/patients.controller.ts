@@ -1,45 +1,69 @@
 import { Request, Response } from 'express'
-import { deletePatient, getPatients, postPatient, putPatient } from '../services/patients.services'
-import { Patient } from '../interfaces/patient.interface'
-import errorHandler from '../helpers/errorHandler'
+import errorHandler from '../helpers/error.handler'
+import { IPatient, IPatientUpdate } from '../interfaces/patient.interface'
+import * as PatientService from '../services/patients.services'
 
-const getObjects = async (_req: Request, res: Response): Promise<void> => {
+const getPatients = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const result = await getPatients()
-    res.send({
-      result,
-      message: 'Resultado exitoso'
-    })
+    const patients = await PatientService.getPatients()
+    res.send(patients)
   } catch (error) {
-    errorHandler(res, 'Error get all patients')
+    errorHandler(res, 'Error get patients')
   }
 }
 
-const postObject = async (req: Request, res: Response): Promise<void> => {
+const getPatientByDni = async (req: Request, res: Response): Promise<any> => {
   try {
-    const result = await postPatient(req.body as Patient)
+    const patient = await PatientService.getPatientByDni(req.params.dni)
+    res.send(patient)
+  } catch (error) {
+    if (typeof error === 'string') {
+      errorHandler(res, error)
+    }
+    errorHandler(res, 'Error get a patient by dni')
+  }
+}
+
+const postPatient = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await PatientService.postPatient(req.body as IPatient)
     res.send(result)
   } catch (error) {
     errorHandler(res, 'Error post a patient')
   }
 }
 
-const putObject = async (req: Request, res: Response): Promise<void> => {
+const putPatient = async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await putPatient(req.params.id, req.body as Patient)
-    res.send(result)
+    const result = await PatientService.putPatient(req.params.dni, req.body as IPatientUpdate)
+    if (result === true) {
+      res.send({
+        message: `Patient with dni ${req.params.dni} has been updated`
+      })
+    } else {
+      res.send({
+        message: `Error updating patient with dni ${req.params.dni}`
+      })
+    }
   } catch (error) {
     errorHandler(res, 'Error put a patient')
   }
 }
-
-const deleteObject = async (req: Request, res: Response): Promise<void> => {
+const deletePatient = async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await deletePatient(req.params.id)
-    res.send(result)
+    const result = await PatientService.deletePatient(req.params.dni)
+    if (result === true) {
+      res.send({
+        message: `Patient with dni ${req.params.dni} has been deleted`
+      })
+    } else {
+      res.send({
+        message: `Error deleting patient with dni ${req.params.dni}`
+      })
+    }
   } catch (error) {
-    errorHandler(res, 'Error delete object')
+    errorHandler(res, 'Error delete a patient')
   }
 }
 
-export { getObjects, postObject, putObject, deleteObject }
+export { getPatients, getPatientByDni, postPatient, putPatient, deletePatient }

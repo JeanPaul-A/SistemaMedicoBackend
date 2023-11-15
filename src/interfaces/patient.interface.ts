@@ -1,4 +1,4 @@
-export interface Patient {
+export interface IPatient {
   'dni': string
   'name': string
   'surname': string
@@ -7,4 +7,6 @@ export interface Patient {
   'phone': number
 }
 
-export type PatientLogin = Pick<Patient, 'dni' | 'password'>
+export type IPatientLogin = Pick<IPatient, 'dni' | 'password'>
+
+export type IPatientUpdate = Pick<IPatient, 'dni' | 'email' | 'phone'>
