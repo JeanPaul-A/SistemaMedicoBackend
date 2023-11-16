@@ -4,10 +4,14 @@ import { ResponseError } from '../interfaces/error.interface'
 
 const errorHandler = (res: Response, error: ResponseError | string): void => {
   if (isErrorBasic(error)) {
-    res.status(error.httpCode).send(error.message)
+    res.status(error.httpCode).send({
+      message: error.message
+    })
   } else {
     if (typeof error === 'string') {
-      res.send(error)
+      res.send({
+        message: error
+      })
     }
   }
 }

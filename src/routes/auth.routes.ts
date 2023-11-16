@@ -1,10 +1,9 @@
 import { Router } from 'express'
+import * as LoginController from '../controllers/auth.controller'
 
 const router = Router()
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.post('/', () => {
-  console.log('asdasd')
-})
+router.post('/', LoginController.loginPatient)
 
-export { router as loginRouter }
+export default router

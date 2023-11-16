@@ -1,8 +1,10 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import initialRoutes from './routes/initial.routes'
 import sequelize from './helpers/database.handler'
+import authRoute from './routes/auth.routes'
+import initialRoutes from './routes/initial.routes'
+import authenticationService from './middleware/authentication/jwt.auth'
 
 // Startup server
 const app = express()
@@ -21,4 +23,5 @@ app.listen(PORT, async () => {
     })
 })
 
-app.use('/api', initialRoutes)
+app.use('/api/auth', authRoute)
+app.use('/api/', authenticationService, initialRoutes)

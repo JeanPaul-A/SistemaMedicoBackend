@@ -1,3 +1,4 @@
+import { hashPassword } from '../helpers/bcrypt.handler'
 import { IPatient, IPatientUpdate } from '../interfaces/patient.interface'
 import Patient from '../models/patient.model'
 
@@ -14,7 +15,7 @@ const getPatients = async (): Promise<Patient[]> => {
 const getPatientByDni = async (dni: string): Promise<Patient | string | undefined> => {
   try {
     const patient = await Patient.findByPk(dni)
-    if (patient == null) {
+    if (patient === null) {
       return `There´s not patient with dni: ${dni} in database`
     } else {
       return patient
@@ -25,13 +26,14 @@ const getPatientByDni = async (dni: string): Promise<Patient | string | undefine
 }
 
 const postPatient = async (patient: IPatient): Promise<any> => {
+  const hashedPassword = await hashPassword(patient.password)
   try {
     const newPatient = await Patient.create({
       dni: patient.dni,
       name: patient.name,
       surname: patient.surname,
       email: patient.email,
-      password: patient.password,
+      password: hashedPassword,
       phone: patient.phone
     })
     return {

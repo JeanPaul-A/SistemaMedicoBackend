@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import errorHandler from '../helpers/error.handler'
 import { IPatient, IPatientUpdate } from '../interfaces/patient.interface'
-import * as PatientService from '../services/patients.services'
+import * as PatientService from '../services/patients.service'
 
 const getPatients = async (_req: Request, res: Response): Promise<void> => {
   try {
@@ -15,11 +15,11 @@ const getPatients = async (_req: Request, res: Response): Promise<void> => {
 const getPatientByDni = async (req: Request, res: Response): Promise<any> => {
   try {
     const patient = await PatientService.getPatientByDni(req.params.dni)
+    if (typeof patient === 'string') {
+      errorHandler(res, patient)
+    }
     res.send(patient)
   } catch (error) {
-    if (typeof error === 'string') {
-      errorHandler(res, error)
-    }
     errorHandler(res, 'Error get a patient by dni')
   }
 }

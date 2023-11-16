@@ -1,24 +1,22 @@
-// import { Request, Response } from 'express'
-// import { loginPatientS } from '../services/auth.services'
-// import { PatientLogin } from '../interfaces/patient.interface'
-// import errorHandler from '../helpers/error.handler'
-// import { isErrorBasic } from '../helpers/type.checkers'
-// const loginPatientC = async (req: Request, res: Response): Promise<void> => {
-//   try {
-//     const result = await loginPatientS(req.body as PatientLogin)
+import { Request, Response } from 'express'
+import errorHandler from '../helpers/error.handler'
+import * as LoginService from '../services/auth.service'
 
-//     if (isErrorBasic(result)) {
-//       errorHandler(res, result)
-//     } else {
-//       res.send({
-//         result,
-//         message: 'Resultado exitoso'
-//       })
-//     }
-//   } catch (error: any) {
-//     console.log(error)
-//     res.send(error)
-//   }
-// }
+const loginPatient = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await LoginService.loginPatient(req.body.dni, req.body.password)
 
-// export { loginPatientC }
+    if (result.status !== false) {
+      res.send({
+        message: 'Welcome patient',
+        token: result.token
+      })
+    } else {
+      errorHandler(res, 'Dni or password invalid')
+    }
+  } catch (error: any) {
+    res.send(error)
+  }
+}
+
+export { loginPatient }
